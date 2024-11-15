@@ -1,0 +1,66 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: radial-gradient(circle, #0f0f0f, #1c1c1c, #222);
+    background-size: cover;
+    overflow: hidden;
+}
+
+.box {
+    position: relative;
+    width: 250px;
+    height: 350px;
+    transform-style: preserve-3d;
+    animation: animate 15s linear infinite;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.box:hover {
+    animation-play-state: paused;
+}
+
+@keyframes animate {
+    0% {
+        transform: perspective(1000px) rotateY(0deg);
+    }
+    100% {
+        transform: perspective(1000px) rotateY(360deg);
+    }
+}
+
+.box span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-origin: center;
+    transform-style: preserve-3d;
+    transform: rotateY(calc(var(--i) * 36deg)) translateZ(450px);
+    -webkit-box-reflect: below 4px linear-gradient(transparent, rgba(0, 0, 0, 0.4));
+}
+
+.box span img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: 0.5s;
+    border-radius: 15px;
+    border: 4px solid #444;
+    box-shadow: 0 5px 20px rgba(255, 255, 255, 0.2), 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+img:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4), 0 10px 20px rgba(0, 0, 0, 0.6);
+}
