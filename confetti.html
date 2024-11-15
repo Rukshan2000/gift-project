@@ -1,0 +1,192 @@
+<!-- ---- reset ---- -->
+<style>
+    /* Import a fancy Google Font */
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+    
+    body {
+      background: linear-gradient(45deg, #3a3a3a, #1e1e1e);
+      background-size: 400% 400%;
+      animation: gradientAnimation 15s ease infinite, shineAnimation 3s linear infinite;
+      margin: 0;
+      font-family: 'Pacifico', sans-serif; /* Applying the fancy font */
+      color: white;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+  
+    @keyframes gradientAnimation {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+  
+    @keyframes shineAnimation {
+      0% {
+        background-position: -100% 0;
+      }
+      50% {
+        background-position: 100% 0;
+      }
+      100% {
+        background-position: -100% 0;
+      }
+    }
+  
+    .message {
+      font-size: 4rem;
+      font-weight: bold;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(-50px);
+      animation: entranceAnimation 2s forwards, shineAnimation 2s ease-in-out infinite;
+    }
+  
+    @keyframes entranceAnimation {
+      0% {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  
+    .countdown {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  
+    .github {
+      z-index: 10000;
+      bottom: 10px;
+      right: 10px;
+      position: fixed;
+      border-radius: 10px;
+      background: #000000;
+      padding: 0 12px 6px 12px;
+      border: 1px solid #000;
+    }
+  
+    .github a:hover,
+    .github a:link,
+    .github a:visited,
+    .github a:active {
+      color: #000;
+      text-decoration: none;
+    }
+  
+    .github img {
+      height: 30px;
+    }
+  
+    .github #gh-project {
+      font-size: 20px;
+      padding-left: 5px;
+      font-weight: bold;
+      vertical-align: bottom;
+    }
+  </style>
+  
+  <!-- Birthday Message -->
+  <div class="message">
+      Happy Birthday Sigi! 🎉
+  </div>
+  
+  <!-- Countdown -->
+  <div id="countdown" class="countdown">
+      Ready for surprise 5
+  </div>
+  
+  <!-- GitHub Buttons -->
+  <div class="github">
+      <a class="btn btn-link" href="https://github.com/matteobruni/tsparticles" title="Find more info on GitHub">
+          <img class="img-fluid" id="gh-mark" src="https://particles.js.org/images/GitHub-Mark-120px-plus.png" alt="">
+          <span id="gh-project">tsParticles</span>
+      </a>
+      <div>
+          <a class="github-button" href="https://github.com/matteobruni/tsparticles" data-icon="octicon-star" aria-label="Star matteobruni/tsparticles on GitHub">Star</a>
+          <a class="github-button" href="https://github.com/matteobruni/tsparticles/fork" data-icon="octicon-repo-forked" aria-label="Fork matteobruni/tsparticles on GitHub">Fork</a>
+      </div>
+  </div>
+  
+  <!-- GitHub Buttons Script -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  
+  <!-- Confetti.js Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti"></script>
+  
+  <script>
+    const duration = 60 * 60 * 1000, // Duration of confetti effect
+      animationEnd = Date.now() + duration,
+      defaults = {
+        startVelocity: 40, // Increased velocity for more dynamic confetti
+        spread: 360, // Full spread of particles
+        ticks: 50, // More ticks to keep particles alive longer
+        zIndex: 0,
+        particleCount: 500, // Increased particle count for more visibility
+        shapes: ['circle', 'square'], // Different shapes for variety
+        colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff9900'] // More colorful confetti
+      };
+  
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+  
+    const interval = setInterval(function () {
+      const timeLeft = animationEnd - Date.now();
+  
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+  
+      const particleCount = 50 * (timeLeft / duration); // Increased particle count over time
+  
+      // Confetti falling from the left
+      confetti(
+        Object.assign({}, defaults, {
+          particleCount,
+          origin: { x: randomInRange(0.1, 0.3), y: -0.2 } // Falling from the top
+        })
+      );
+  
+      // Confetti falling from the right
+      confetti(
+        Object.assign({}, defaults, {
+          particleCount,
+          origin: { x: randomInRange(0.7, 0.9), y: -0.2 } // Falling from the top
+        })
+      );
+  
+      // Confetti falling from the top-center
+      confetti(
+        Object.assign({}, defaults, {
+          particleCount,
+          origin: { x: 0.5, y: -0.2 } // Falling from the top-center
+        })
+      );
+    }, 200); // Decreased interval for more frequent bursts
+  
+    // Countdown and redirect
+    let countdownValue = 5;
+    const countdownElement = document.getElementById('countdown');
+    const countdownInterval = setInterval(function () {
+      countdownElement.innerText = `Ready for surprise ${countdownValue}`;
+      countdownValue--;
+      if (countdownValue < 0) {
+        clearInterval(countdownInterval);
+        window.location.href = "gift.html"; // Redirect to gift.html after 5 seconds
+      }
+    }, 1000);
+  </script>
+  
