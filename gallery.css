@@ -19,7 +19,7 @@ body {
     width: 250px;
     height: 350px;
     transform-style: preserve-3d;
-    animation: animate 15s linear infinite;
+    animation: animate 30s linear infinite;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
