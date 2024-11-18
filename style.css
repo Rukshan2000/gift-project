@@ -1,115 +1,112 @@
-/* Dark background styling */
+@import url(https://fonts.googleapis.com/css?family=Lato:300italic);
+
+html,
 body {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #121212; /* Dark background */
-    margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background: #ee9ca7;
+}
+
+#cake {
+  display: block;
+  position: relative;
+  margin: -10em auto 0 auto;
+}
+
+/* ============================================== Candle
+*/
+
+.velas {
+  background: #ffffff;
+  border-radius: 10px;
+  position: absolute;
+  top: 228px;
+  left: 50%;
+  margin-left: -2.4px;
+  margin-top: -8.33333333px;
+  width: 5px;
+  height: 35px;
+  transform: translateY(-300px);
+  backface-visibility: hidden;
+  animation: in 500ms 6s ease-out forwards;
+}
+.velas:after,
+.velas:before {
+  background: rgba(255, 0, 0, 0.4);
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2.22222222px;
+}
+.velas:after {
+  top: 25%;
+  left: 0;
+}
+.velas:before {
+  top: 45%;
+  left: 0;
+}
+
+/* ============================================== Fire
+*/
+
+.fuego {
+  border-radius: 100%;
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  margin-left: -2.6px;
+  width: 6.66666667px;
+  height: 18px;
+}
+.fuego:nth-child(1) {
+  animation: fuego 2s 6.5s infinite;
+}
+.fuego:nth-child(2) {
+  animation: fuego 1.5s 6.5s infinite;
+}
+.fuego:nth-child(3) {
+  animation: fuego 1s 6.5s infinite;
+}
+.fuego:nth-child(4) {
+  animation: fuego 0.5s 6.5s infinite;
+}
+.fuego:nth-child(5) {
+  animation: fuego 0.2s 6.5s infinite;
+}
+
+/* ============================================== Animation Fire
+*/
+
+@keyframes fuego {
+  0%, 100% {
+    background: rgba(254, 248, 97, 0.5);
+    box-shadow: 0 0 40px 10px rgba(248, 233, 209, 0.2);
+    transform: translateY(0) scale(1);
   }
-  
-  .cake-container {
-    perspective: 1000px; /* Depth for 3D effect */
+  50% {
+    background: rgba(255, 50, 0, 0.1);
+    box-shadow: 0 0 40px 20px rgba(248, 233, 209, 0.2);
+    transform: translateY(-20px) scale(0);
   }
-  
-  .cake {
-    position: relative;
-    width: 240px;
-    height: 260px;
-    transform: rotateX(20deg) rotateY(0deg);
-    box-shadow: 0 40px 70px rgba(255, 255, 255, 0.1); /* Shiny shadow */
+}
+
+@keyframes in {
+  to {
+    transform: translateY(0);
   }
-  
-  .layer {
-    width: 240px;
-    height: 60px;
-    border-radius: 10px;
-    position: relative;
-    background: #6f3b20;
-    margin-top: -10px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6); /* Cake shadows */
+}
+
+.text {
+  color: #8b6a60;
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+  font-style:italic;
+  text-align: center;
+  h1 {
+    font-size: 1.4em;
   }
-  
-  .icing {
-    position: absolute;
-    top: -15px;
-    width: 250px;
-    height: 35px;
-    background-color: #fff;
-    border-radius: 50% 50% 0 0;
-    left: -5px;
-    z-index: 1;
-  }
-  
-  .cherry {
-    position: absolute;
-    top: -30px;
-    left: 105px;
-    width: 25px;
-    height: 25px;
-    background-color: red;
-    border-radius: 50%;
-  }
-  
-  /* Candle styling */
-  .candle {
-    position: absolute;
-    width: 10px;
-    height: 60px;
-    background-color: #fff;
-    border-radius: 5px;
-  }
-  
-  .candle-1 { top: -55px; left: 60px; }
-  .candle-2 { top: -55px; left: 130px; }
-  .candle-3 { top: -55px; left: 170px; }
-  .candle-4 { top: -55px; left: 90px; }
-  
-  .wick {
-    position: absolute;
-    top: -10px;
-    left: 4px;
-    width: 2px;
-    height: 15px;
-    background-color: black;
-  }
-  
-  .flame {
-    position: absolute;
-    top: -20px;
-    left: -2px;
-    width: 14px;
-    height: 20px;
-    background: radial-gradient(circle, #ffdd57 40%, #ffa500 60%, #ff4500 100%);
-    border-radius: 50%;
-    animation: flicker 0.2s infinite alternate;
-  }
-  
-  @keyframes flicker {
-    0% { transform: rotate(-5deg) scale(1); opacity: 1; }
-    50% { transform: rotate(5deg) scale(1.1); opacity: 0.9; }
-    100% { transform: rotate(-5deg) scale(1); opacity: 1; }
-  }
-  
-  /* Button styling */
-  .blow-out-button {
-    margin-top: 20px;
-    padding: 15px 30px;
-    font-size: 18px;
-    color: #fff;
-    background: linear-gradient(135deg, #ff5f6d, #ffc371);
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: transform 0.3s, background 0.3s;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-  }
-  
-  .blow-out-button:hover {
-    transform: scale(1.1);
-    background: linear-gradient(135deg, #ff512f, #dd2476);
-  }
-  
-  
-  
+}  
