@@ -1,227 +1,196 @@
 <!-- ---- reset ---- -->
 <style>
-    /* Import a fancy Google Font */
-    @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-    
     body {
-      background: linear-gradient(45deg, #3a3a3a, #1e1e1e);
-      background-size: 400% 400%;
-      animation: gradientAnimation 15s ease infinite, shineAnimation 3s linear infinite;
-      margin: 0;
-      font-family: 'Pacifico', sans-serif; /* Applying the fancy font */
-      color: white;
-      height: 100vh;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: radial-gradient(circle, #0f0f0f, #1c1c1c, #222);
+            background-size: cover;
+            margin: 0;
     }
-  
-    @keyframes gradientAnimation {
-      0% {
-        background-position: 0% 50%;
+    canvas {
+      display: block;
+    }
+    h1 {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-family: "Source Sans Pro";
+      font-size: 4em;
+      font-weight: 900;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    #countdown {
+      position: absolute;
+      top: 70%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-family: "Source Sans Pro";
+      font-size: 1em;
+      font-weight: 700;
+    }
+    </style>
+      
+    <h1>Happy Birthday Sigithi</h1>
+    <div id="countdown">Waiting for surprise: 10</div>
+    <canvas id="birthday"></canvas>
+    
+    <!-- GitHub Buttons Script -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!-- Confetti.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti"></script>
+    
+    <script>
+    // helper functions
+    const PI2 = Math.PI * 2;
+    const random = (min, max) => Math.random() * (max - min + 1) + min | 0;
+    const timestamp = _ => new Date().getTime();
+    
+    // Countdown function
+    function startCountdown() {
+      let countdownElement = document.getElementById('countdown');
+      let countdown = 10; // Start the countdown at 5 seconds
+      countdownElement.innerText = `Waiting for surprise: ${countdown}`;
+    
+      let countdownInterval = setInterval(() => {
+        countdown--;
+        if (countdown > 0) {
+          countdownElement.innerText = `Waiting for surprise: ${countdown}`;
+        } else {
+          clearInterval(countdownInterval);
+          countdownElement.innerText = `Surprise!`;
+          // Redirect to gallery.html after countdown
+          window.location.href = 'gallery.html';
+        }
+      }, 1000); // Update every second
+    }
+    
+    // Firework and animation logic (same as your existing code)
+    class Birthday {
+      constructor() {
+        this.resize();
+        this.fireworks = [];
+        this.counter = 0;
       }
-      50% {
-        background-position: 100% 50%;
+    
+      resize() {
+        this.width = canvas.width = window.innerWidth;
+        let center = this.width / 2 | 0;
+        this.spawnA = center - center / 4 | 0;
+        this.spawnB = center + center / 4 | 0;
+    
+        this.height = canvas.height = window.innerHeight;
+        this.spawnC = this.height * 0.1;
+        this.spawnD = this.height * 0.5;
       }
-      100% {
-        background-position: 0% 50%;
+    
+      onClick(evt) {
+        let x = evt.clientX || (evt.touches && evt.touches[0].pageX);
+        let y = evt.clientY || (evt.touches && evt.touches[0].pageY);
+    
+        let count = random(3, 5);
+        for (let i = 0; i < count; i++) {
+          this.fireworks.push(
+            new Firework(random(this.spawnA, this.spawnB), this.height, x, y, random(0, 260), random(30, 110))
+          );
+        }
+    
+        this.counter = -1;
+      }
+    
+      update(delta) {
+        ctx.globalCompositeOperation = 'hard-light';
+        ctx.fillStyle = `rgba(20,20,20,${7 * delta})`;
+        ctx.fillRect(0, 0, this.width, this.height);
+    
+        ctx.globalCompositeOperation = 'lighter';
+        for (let firework of this.fireworks) firework.update(delta);
+    
+        this.counter += delta * 3;
+        if (this.counter >= 1) {
+          this.fireworks.push(
+            new Firework(random(this.spawnA, this.spawnB), this.height, random(0, this.width), random(this.spawnC, this.spawnD), random(0, 360), random(30, 110))
+          );
+          this.counter = 0;
+        }
+    
+        if (this.fireworks.length > 1000) this.fireworks = this.fireworks.filter(firework => !firework.dead);
       }
     }
-  
-    @keyframes shineAnimation {
-      0% {
-        background-position: -100% 0;
+    
+    class Firework {
+      constructor(x, y, targetX, targetY, shade, offsprings) {
+        this.dead = false;
+        this.offsprings = offsprings;
+        this.x = x;
+        this.y = y;
+        this.targetX = targetX;
+        this.targetY = targetY;
+        this.shade = shade;
+        this.history = [];
       }
-      50% {
-        background-position: 100% 0;
+    
+      update(delta) {
+        if (this.dead) return;
+        let xDiff = this.targetX - this.x;
+        let yDiff = this.targetY - this.y;
+        if (Math.abs(xDiff) > 3 || Math.abs(yDiff) > 3) {
+          this.x += xDiff * 2 * delta;
+          this.y += yDiff * 2 * delta;
+          this.history.push({ x: this.x, y: this.y });
+          if (this.history.length > 20) this.history.shift();
+        } else {
+          if (this.offsprings && !this.madeChilds) {
+            let babies = this.offsprings / 2;
+            for (let i = 0; i < babies; i++) {
+              let targetX = this.x + this.offsprings * Math.cos(PI2 * i / babies) | 0;
+              let targetY = this.y + this.offsprings * Math.sin(PI2 * i / babies) | 0;
+              birthday.fireworks.push(new Firework(this.x, this.y, targetX, targetY, this.shade, 0));
+            }
+          }
+          this.madeChilds = true;
+          this.history.shift();
+        }
+    
+        if (this.history.length === 0) this.dead = true;
+        else if (this.offsprings) {
+          for (let i = 0; this.history.length > i; i++) {
+            let point = this.history[i];
+            ctx.beginPath();
+            ctx.fillStyle = 'hsl(' + this.shade + ',100%,' + i + '%)';
+            ctx.arc(point.x, point.y, 1, 0, PI2, false);
+            ctx.fill();
+          }
+        } else {
+          ctx.beginPath();
+          ctx.fillStyle = 'hsl(' + this.shade + ',100%,50%)';
+          ctx.arc(this.x, this.y, 1, 0, PI2, false);
+          ctx.fill();
+        }
       }
-      100% {
-        background-position: -100% 0;
-      }
     }
-  
-    .message {
-      font-size: 4rem;
-      font-weight: bold;
-      text-align: center;
-      opacity: 0;
-      transform: translateY(-50px);
-      animation: entranceAnimation 2s forwards, shineAnimation 2s ease-in-out infinite;
-    }
-  
-    @keyframes entranceAnimation {
-      0% {
-        opacity: 0;
-        transform: translateY(-50px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-  
-    .countdown {
-      font-size: 2rem;
-      font-weight: bold;
-      margin-top: 20px;
-    }
-  
-    .github {
-      z-index: 10000;
-      bottom: 10px;
-      right: 10px;
-      position: fixed;
-      border-radius: 10px;
-      background: #000000;
-      padding: 0 12px 6px 12px;
-      border: 1px solid #000;
-    }
-  
-    .github a:hover,
-    .github a:link,
-    .github a:visited,
-    .github a:active {
-      color: #000;
-      text-decoration: none;
-    }
-  
-    .github img {
-      height: 30px;
-    }
-  
-    .github #gh-project {
-      font-size: 20px;
-      padding-left: 5px;
-      font-weight: bold;
-      vertical-align: bottom;
-    }
-
-    /* Mobile responsive styles */
-    @media (max-width: 768px) {
-        .message {
-            font-size: 3rem; /* Reduce font size for smaller screens */
-        }
-
-        .countdown {
-            font-size: 1.5rem; /* Adjust countdown font size */
-        }
-
-        .github {
-            padding: 6px 10px 4px 10px; /* Adjust padding for smaller screens */
-        }
-
-        .github img {
-            height: 25px; /* Smaller GitHub logo */
-        }
-
-        .github #gh-project {
-            font-size: 16px; /* Smaller text for the GitHub project name */
-        }
-    }
-
-    @media (max-width: 480px) {
-        .message {
-            font-size: 2.5rem; /* Further reduce font size for very small screens */
-        }
-
-        .countdown {
-            font-size: 1.2rem; /* Further adjust countdown font size */
-        }
-
-        .github {
-            padding: 4px 8px 4px 8px; /* Smaller padding */
-        }
-
-        .github img {
-            height: 20px; /* Even smaller GitHub logo */
-        }
-
-        .github #gh-project {
-            font-size: 14px; /* Smaller text for the GitHub project name */
-        }
-    }
-</style>
-  
-<!-- Birthday Message -->
-<div class="message">
-    Happy Birthday Sigi! 🎉
-</div>
-  
-<!-- Countdown -->
-<div id="countdown" class="countdown">
-    Ready for surprise 5
-</div>
-  
-<!-- GitHub Buttons -->
-
-  
-<!-- GitHub Buttons Script -->
-<script async defer src="https://buttons.github.io/buttons.js"></script>
-  
-<!-- Confetti.js Library -->
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti"></script>
-  
-<script>
-    const duration = 60 * 60 * 1000, // Duration of confetti effect
-        animationEnd = Date.now() + duration,
-        defaults = {
-            startVelocity: 40, // Increased velocity for more dynamic confetti
-            spread: 360, // Full spread of particles
-            ticks: 50, // More ticks to keep particles alive longer
-            zIndex: 0,
-            particleCount: 500, // Increased particle count for more visibility
-            shapes: ['circle', 'square'], // Different shapes for variety
-            colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff9900'] // More colorful confetti
-        };
-
-    function randomInRange(min, max) {
-        return Math.random() * (max - min) + min;
-    }
-
-    const interval = setInterval(function () {
-        const timeLeft = animationEnd - Date.now();
-
-        if (timeLeft <= 0) {
-            return clearInterval(interval);
-        }
-
-        const particleCount = 50 * (timeLeft / duration); // Increased particle count over time
-
-        // Confetti falling from the left
-        confetti(
-            Object.assign({}, defaults, {
-                particleCount,
-                origin: { x: randomInRange(0.1, 0.3), y: -0.2 } // Falling from the top
-            })
-        );
-
-        // Confetti falling from the right
-        confetti(
-            Object.assign({}, defaults, {
-                particleCount,
-                origin: { x: randomInRange(0.7, 0.9), y: -0.2 } // Falling from the top
-            })
-        );
-
-        // Confetti falling from the top-center
-        confetti(
-            Object.assign({}, defaults, {
-                particleCount,
-                origin: { x: 0.5, y: -0.2 } // Falling from the top-center
-            })
-        );
-    }, 200); // Decreased interval for more frequent bursts
-
-    // Countdown and redirect
-    let countdownValue = 5;
-    const countdownElement = document.getElementById('countdown');
-    const countdownInterval = setInterval(function () {
-        countdownElement.innerText = `Ready for surprise ${countdownValue}`;
-        countdownValue--;
-        if (countdownValue < 0) {
-            clearInterval(countdownInterval);
-            window.location.href = "gift.html"; // Redirect to gift.html after 5 seconds
-        }
-    }, 1000);
-</script>
+    
+    // Start fireworks and countdown when page loads
+    let canvas = document.getElementById('birthday');
+    let ctx = canvas.getContext('2d');
+    let then = timestamp();
+    let birthday = new Birthday();
+    window.onresize = () => birthday.resize();
+    
+    (function loop() {
+      requestAnimationFrame(loop);
+      let now = timestamp();
+      let delta = now - then;
+      then = now;
+      birthday.update(delta / 1000);
+    })();
+    
+    // Start the countdown on page load
+    window.onload = startCountdown;
+    </script>
+    
